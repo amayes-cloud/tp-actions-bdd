@@ -1,7 +1,8 @@
 
 name: Database Check
 
-on: push
+on:
+  push:
 
 jobs:
   db:
@@ -11,7 +12,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup PostgreSQL
+      - name: Setup database
         run: bash db/setup.sh
 
       - name: Display students
