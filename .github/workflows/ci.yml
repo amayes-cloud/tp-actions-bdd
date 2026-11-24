@@ -1,3 +1,4 @@
+
 name: CI
 
 on: [push, pull_request]
@@ -10,26 +11,26 @@ jobs:
         python-version: ["3.10", "3.12"]
     steps:
       - uses: actions/checkout@v4
+
       - name: Préparer la base de données
         run: bash db/setup.sh
+
       - uses: actions/setup-python@v5
         with:
-           python-version: ${{ matrix.python-version }}
+          python-version: ${{ matrix.python-version }}
+
       - name: Installer les dépendances
         run: pip install -r requirements.txt
         working-directory: python-app
+
       - name: Lancer les tests
         run: pytest -v
         working-directory: python-app
 
-
-
   node:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Setup database
         run: bash db/setup.sh
@@ -47,14 +48,10 @@ jobs:
         run: npm test
         working-directory: node-app
 
-
-
   java:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Setup database
         run: bash db/setup.sh
@@ -69,15 +66,10 @@ jobs:
         run: mvn -B package
         working-directory: java-app
 
-
-
-
   php:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Setup database
         run: bash db/setup.sh
@@ -96,11 +88,9 @@ jobs:
         run: vendor/bin/phpunit tests
         working-directory: php-app
 
-
-
-  python:
+  build:
+    needs: [python, node, java, php]
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        python-version: ["3.10", "3.12"]
+    steps:
+      - name: Build
+        run: echo "Tous les tests sont réussis. Build terminé !"
